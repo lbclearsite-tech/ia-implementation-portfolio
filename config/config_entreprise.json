@@ -1,0 +1,14 @@
+{
+  "entreprise": "Ton Entreprise SARL",
+  "forme_juridique": "SARL",
+  "adresse_entreprise": "1 Rue des Artisans, 10000 Troyes",
+  "telephone": "03 25 00 00 00",
+  "email": "contact@entreprise.fr",
+  "siret": "123 456 789 00012",
+  "tva_intra": "FR12 123 456 789",
+  "assurance_decennale": "AXA - Police n° AXA-2024-001",
+  "iban": "FR76 1234 5678 9012 3456 7890 123",
+  "bic": "AXABFRPPXXX",
+  "rcs": "RCS Troyes 123 456 789",
+"code_ape": "4331Z - Travaux de platerie"
+}

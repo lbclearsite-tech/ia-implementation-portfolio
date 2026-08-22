@@ -1,0 +1,15 @@
+# Secrets — ne JAMAIS publier
+.env
+credentials.json
+token.json
+
+# Généré automatiquement
+__pycache__/
+*.pyc
+
+# Données volumineuses et régénérables
+data/chroma_db/
+
+# Sorties de production
+outputs/
+logs/

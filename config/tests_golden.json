@@ -1,0 +1,42 @@
+[
+  {
+    "id": "test_01",
+    "question": "Comment sont entraînés les modèles chez Anthropic ?",
+    "type": "out_of_corpus"
+  },
+  {
+    "id": "test_02",
+    "question": "Quelles sont les obligations des IA en termes de protection et d'utilisation des données clients ?",
+    "type": "out_of_corpus"
+  },
+  {
+    "id": "test_03",
+    "question": "What are Claude Opus 4 benchmark scores ?",
+    "type": "in_corpus"
+  },
+  {
+    "id": "test_04",
+    "question": "Quels sont les principes clés de la constitution d'Anthropic ?",
+    "type": "in_corpus"
+  },
+  {
+    "id": "test_05",
+    "question": "Quels sont les risques identifiés par Anthropic ?",
+    "type": "in_corpus"
+  },
+  {
+    "id": "test_06",
+    "question": "Qui a gagné la coupe du monde en 2018 ?",
+    "type": "out_of_corpus"
+  },
+  {
+    "id": "test_07",
+    "question": "Qui est plus performant entre ChatGPT et Claude IA ?",
+    "type": "out_of_corpus"
+  },
+  {
+    "id": "test_08",
+    "question": "Quelle distance sépare Pékin de Paris ?",
+    "type": "out_of_corpus"
+  }
+]
