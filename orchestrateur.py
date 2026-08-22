@@ -3,8 +3,8 @@ import json
 from datetime import datetime
 from dotenv import load_dotenv
 from anthropic import Anthropic
-from assistant import repondre
-from generateur_devis import generer_devis
+from agents.assistant import repondre
+from agents.generateur_devis import generer_devis
 
 load_dotenv()
 client = Anthropic()

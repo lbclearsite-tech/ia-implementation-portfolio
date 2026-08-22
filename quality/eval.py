@@ -1,5 +1,5 @@
 import json
-from assistant import repondre
+from agents.assistant import repondre
 from datetime import datetime
 
 # --- Configuration ---

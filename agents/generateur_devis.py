@@ -4,7 +4,7 @@ import os
 import json
 from pydantic import BaseModel
 from typing import List, Optional
-import pdf_devis
+from . import pdf_devis
 
 load_dotenv()
 
