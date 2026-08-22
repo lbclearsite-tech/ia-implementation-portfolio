@@ -5,6 +5,7 @@ import json
 from pydantic import BaseModel
 from typing import List, Optional
 from . import pdf_devis
+from . import db_devis
 
 load_dotenv()
 
@@ -82,7 +83,7 @@ client_api = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 
 def generer_devis(client_nom, travaux, main_oeuvre, materiaux, tva="10"):
-    """Génère un devis BTP complet (JSON + PDF) à partir des infos chantier."""
+    """Génère un devis BTP complet (JSON + PDF + base) à partir des infos chantier."""
     prompt = f"""Genere un devis BTP avec ces informations :
 
 ENTREPRISE (utilise exactement ces données, n'invente rien) :
@@ -175,6 +176,10 @@ Les données entreprise (SIRET, IBAN, assurance, etc.) sont fournies séparémen
     print(f"\nDevis validé et sauvegardé dans {fichier_sortie}")
 
     pdf_devis.generer_pdf(devis)
+
+    id_devis = db_devis.enregistrer_devis(devis)
+    print(f"Devis enregistré en base (id {id_devis}).")
+
     return devis
 
 
