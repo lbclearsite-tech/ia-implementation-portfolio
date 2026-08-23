@@ -1,4 +1,18 @@
+import os
 import streamlit as st
+from dotenv import load_dotenv
+
+# Chargement de la clé API — fonctionne en local (.env) ET en ligne (secrets Streamlit)
+load_dotenv()  # cas local : lit .env
+
+# cas en ligne : si Streamlit a un fichier de secrets, on pousse la clé dans l'environnement
+try:
+    if "ANTHROPIC_API_KEY" in st.secrets:
+        os.environ["ANTHROPIC_API_KEY"] = st.secrets["ANTHROPIC_API_KEY"]
+except st.errors.StreamlitSecretNotFoundError:
+    pass  # pas de fichier secrets en local, c'est normal — .env prend le relais
+
+# Les imports des agents viennent APRÈS, pour que la clé soit déjà en place
 from orchestrateur import router
 
 st.title("Assistant IA — Devis & Documentation")
