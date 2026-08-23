@@ -1,4 +1,5 @@
 # AI Implementation Portfolio — Multi-Agent System
+**Live demo:** https://ia-implementation-portfolio-xqwbzpgufmuwv8tb5ncckf.streamlit.app
 
 A production-minded multi-agent system built by an **industrial technician** (quality technician, then industrialization technician by trade) transitioning into AI implementation. It applies industrial quality methods — FMEA, control plans, human-in-the-loop validation — to make LLM outputs **reliable, auditable, and safe to ship**.
 
