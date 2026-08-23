@@ -148,10 +148,9 @@ Les données entreprise (SIRET, IBAN, assurance, etc.) sont fournies séparémen
 
 
 def emettre_devis(devis):
-    """Écrit un devis DÉJÀ validé : JSON + PDF + base. Renvoie l'id créé.
-    À n'appeler qu'après la porte de validation (humaine ou UI)."""
     client_nom = devis.get("client", "client")
 
+    os.makedirs("outputs/devis", exist_ok=True)
     fichier_sortie = f"outputs/devis/devis_{client_nom}.json"
     with open(fichier_sortie, "w", encoding="utf-8") as fichier:
         json.dump(devis, fichier, ensure_ascii=False, indent=2)
