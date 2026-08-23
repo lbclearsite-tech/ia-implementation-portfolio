@@ -82,8 +82,9 @@ outil_devis = {
 client_api = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 
-def generer_devis(client_nom, travaux, main_oeuvre, materiaux, tva="10"):
-    """Génère un devis BTP complet (JSON + PDF + base) à partir des infos chantier."""
+def generer_apercu(client_nom, travaux, main_oeuvre, materiaux, tva="10"):
+    """Génère et valide un devis. Renvoie le dict SANS aucun effet de bord.
+    Aucune écriture (JSON/PDF/base) : c'est l'aperçu avant la porte de validation."""
     prompt = f"""Genere un devis BTP avec ces informations :
 
 ENTREPRISE (utilise exactement ces données, n'invente rien) :
@@ -111,14 +112,12 @@ CHANTIER :
     derniere_erreur = None
 
     for tentative in range(1, MAX_RETRIES + 1):
-        print(f"\nTentative {tentative}/{MAX_RETRIES}...")
-
         messages = [{"role": "user", "content": prompt}]
 
         if derniere_erreur:
             messages.append({
                 "role": "assistant",
-                "content": f"[tentative précédente refusée]"
+                "content": "[tentative précédente refusée]"
             })
             messages.append({
                 "role": "user",
@@ -140,17 +139,40 @@ Les données entreprise (SIRET, IBAN, assurance, etc.) sont fournies séparémen
         devis = {**devis_chantier, **config}
 
         try:
-            devis_valide = Devis(**devis)
-            print(f"Validation OK à la tentative {tentative}.")
-            break
+            Devis(**devis)  # validation Pydantic
+            return devis
         except Exception as e:
             derniere_erreur = str(e)
-            print(f"Erreur Pydantic : {derniere_erreur}")
             if tentative == MAX_RETRIES:
-                print(f"\nÉchec après {MAX_RETRIES} tentatives. Arrêt.")
                 return None
 
-    # --- PORTE DE VALIDATION HUMAINE ---
+
+def emettre_devis(devis):
+    """Écrit un devis DÉJÀ validé : JSON + PDF + base. Renvoie l'id créé.
+    À n'appeler qu'après la porte de validation (humaine ou UI)."""
+    client_nom = devis.get("client", "client")
+
+    fichier_sortie = f"outputs/devis/devis_{client_nom}.json"
+    with open(fichier_sortie, "w", encoding="utf-8") as fichier:
+        json.dump(devis, fichier, ensure_ascii=False, indent=2)
+
+    pdf_devis.generer_pdf(devis)
+
+    id_devis = db_devis.enregistrer_devis(devis)
+    return id_devis
+
+
+def generer_devis(client_nom, travaux, main_oeuvre, materiaux, tva="10"):
+    """Version terminal : génère, affiche la porte de validation, puis écrit.
+    Réutilise generer_apercu() et emettre_devis()."""
+    print("\nGénération du devis...")
+    devis = generer_apercu(client_nom, travaux, main_oeuvre, materiaux, tva)
+
+    if devis is None:
+        print(f"\nÉchec après {MAX_RETRIES} tentatives. Arrêt.")
+        return None
+
+    # --- PORTE DE VALIDATION HUMAINE (terminal) ---
     print("\n" + "=" * 55)
     print("DEVIS À VALIDER AVANT ÉMISSION")
     print("=" * 55)
@@ -169,17 +191,8 @@ Les données entreprise (SIRET, IBAN, assurance, etc.) sont fournies séparémen
         return None
     # --- FIN DE LA PORTE ---
 
-    fichier_sortie = f"outputs/devis/devis_{client_nom}.json"
-    with open(fichier_sortie, "w", encoding="utf-8") as fichier:
-        json.dump(devis, fichier, ensure_ascii=False, indent=2)
-
-    print(f"\nDevis validé et sauvegardé dans {fichier_sortie}")
-
-    pdf_devis.generer_pdf(devis)
-
-    id_devis = db_devis.enregistrer_devis(devis)
-    print(f"Devis enregistré en base (id {id_devis}).")
-
+    id_devis = emettre_devis(devis)
+    print(f"\nDevis émis. JSON + PDF générés, enregistré en base (id {id_devis}).")
     return devis
 
 
