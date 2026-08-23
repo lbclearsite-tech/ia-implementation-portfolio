@@ -15,7 +15,14 @@ N_RESULTATS = 5  # nombre de morceaux récupérés par requête
 # --- Initialisation ---
 modele = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 client_chroma = chromadb.PersistentClient(path=CHROMA_DIR)
-collection = client_chroma.get_collection("corpus_ia")
+# Ouvre la collection ; si elle n'existe pas (déploiement neuf), on l'indexe d'abord
+try:
+    collection = client_chroma.get_collection("corpus_ia")
+except Exception:
+    print("Collection absente — indexation du corpus en cours...")
+    from tools.indexer import indexer
+    indexer()
+    collection = client_chroma.get_collection("corpus_ia")
 client_claude = Anthropic()
 
 def rechercher(question):
